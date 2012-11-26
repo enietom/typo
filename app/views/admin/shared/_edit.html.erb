@@ -5,6 +5,7 @@
 
 <% end %>
   
+<% if current_user.admin? %>
 <%= form_tag('/admin/content/merge_article', :id => "merge_form") do %>
 <%= hidden_field_tag 'current_id', @article.id %>
 <div class='separator'>
@@ -15,4 +16,6 @@
   </div>
   <%= submit_tag 'Merge' %>
 </div>
+<% end %>
+
 <% end %>

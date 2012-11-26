@@ -6,6 +6,22 @@ class Admin::ContentController < Admin::BaseController
 
   cache_sweeper :blog_sweeper
 
+  def merge_article
+    unless current_user.admin? 
+      redirect_to :action => 'index'
+      flash[:error] = _("Error, you are not allowed to perform this action")
+      return
+    end
+    @article = Article.find(params[:current_id])
+    @article = @article.merge_with(Article.find(params[:merge_with]))
+    if @article.save
+      logger.info "saved!"
+    else
+      logger.info "not saved!"
+    end
+    redirect_to :action => 'index'
+  end
+
   def auto_complete_for_article_keywords
     @items = Tag.find_with_char params[:article][:keywords].strip
     render :inline => "<%= raw auto_complete_result @items, 'name' %>"
@@ -35,19 +51,6 @@ class Admin::ContentController < Admin::BaseController
       return
     end
     new_or_edit
-  end
-
-  def merge_article
-    @article = Article.find(params[:current_id])
-    logger.info "Here"
-    @article = @article.merge_with(Article.find(params[:merge_with]))
-    logger.info "THere"
-    if @article.save
-      logger.info "saved!"
-    else
-      logger.info "not saved!"
-    end
-    redirect_to :action => 'index'
   end
 
   def destroy
