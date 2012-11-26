@@ -81,7 +81,7 @@ class Article < Content
     new_article.permalink = self.permalink
     new_article.post_type = self.post_type
     new_article.published = self.published
-    new_article.published_at = Date.new
+    new_article.published_at = self.published
     new_article.settings = self.settings
     new_article.text_filter_id = self.text_filter_id
     new_article.title = self.title
