@@ -37,6 +37,19 @@ class Admin::ContentController < Admin::BaseController
     new_or_edit
   end
 
+  def merge_article
+    @article = Article.find(params[:current_id])
+    logger.info "Here"
+    @article = @article.merge_with(Article.find(params[:merge_with]))
+    logger.info "THere"
+    if @article.save
+      logger.info "saved!"
+    else
+      logger.info "not saved!"
+    end
+    redirect_to :action => 'index'
+  end
+
   def destroy
     @record = Article.find(params[:id])
 

@@ -4,3 +4,15 @@
   <%= render :partial => "form" %>
 
 <% end %>
+  
+<%= form_tag('/admin/content/merge_article', :id => "merge_form") do %>
+<%= hidden_field_tag 'current_id', @article.id %>
+<div class='separator'>
+  <h4><%= _("Merge Articles") %></h4>
+  <div class=''>
+    <%= label_tag 'merge_with', "Article ID", :style => 'text-align:left; right-margin: 20px;' %>
+    <%= text_field_tag 'merge_with' %>
+  </div>
+  <%= submit_tag 'Merge' %>
+</div>
+<% end %>

@@ -14,7 +14,7 @@ Feature: Article merging
 
   Scenario: Non-admin cannot merge articles
     Given I am logged into the admin panel as a non-admin
-    And I am on the edit article page
+    And I am on the edit page of article "1"
     Then I should not see "Merge Articles"
     And I should not see "Article ID"
   

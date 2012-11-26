@@ -71,6 +71,25 @@ class Article < Content
     end
   end
 
+  def merge_with(other_article)
+    new_article = Article.get_or_build_article
+    new_article.body = self.body + "\n" + other_article.body
+    new_article.comments = self.comments
+    new_article.comments << other_article.comments
+    new_article.allow_comments = self.allow_comments
+    new_article.author = self.author
+    new_article.permalink = self.permalink
+    new_article.post_type = self.post_type
+    new_article.published = self.published
+    new_article.published_at = Date.new
+    new_article.settings = self.settings
+    new_article.text_filter_id = self.text_filter_id
+    new_article.title = self.title
+    new_article.type = self.type
+    new_article.user_id = self.user_id
+    new_article
+  end
+
   def set_permalink
     return if self.state == 'draft'
     self.permalink = self.title.to_permalink if self.permalink.nil? or self.permalink.empty?

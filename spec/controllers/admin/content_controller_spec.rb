@@ -671,4 +671,28 @@ describe Admin::ContentController do
 
     end
   end
+  
+  describe "merge two articles" do
+    before do
+      @a = Factory.build(:article)
+      @a.id = 10
+      @a.body = "Article 10 body"
+      
+      @b = Factory.build(:article)
+      @b.id = 11
+      @b.body = "Article 11 body"
+    end
+
+    it "should create new article" do
+      pending "Need to test this..."
+    end
+    
+    it "should make a new article with both article's contents" do
+      pending "Need to test this..."
+    end
+    
+    it "should create new article" do
+      pending "Need to test this..."
+    end
+  end
 end
