@@ -21,34 +21,40 @@ class Admin::CategoriesController < Admin::BaseController
     redirect_to :action => 'new'
   end
 
-  private
-
-  def new_or_edit
-    @categories = Category.find(:all)
-    @category = Category.find(params[:id])
-    @category.attributes = params[:category]
-    if request.post?
-      respond_to do |format|
-        format.html { save_category }
-        format.js do 
-          @category.save
-          @article = Article.new
-          @article.categories << @category
-          return render(:partial => 'admin/content/categories')
-        end
-      end
-      return
-    end
-    render 'new'
-  end
-
   def save_category
+    if (params[:category][:id].empty?)
+      @category = Category.new
+    else
+      @category = Category.find(params[:category][:id])
+    end
+    @category.attributes = params[:category]
     if @category.save!
       flash[:notice] = _('Category was successfully saved.')
     else
       flash[:error] = _('Category could not be saved.')
     end
-    redirect_to :action => 'new'
+    
+    respond_to do |format|
+      format.html { redirect_to :action => 'new' }
+      format.js do 
+        @category.save
+        @article = Article.new
+        @article.categories << @category
+        return render(:partial => 'admin/content/categories')
+      end
+    end
+  end
+
+  private
+
+  def new_or_edit
+    @categories = Category.find(:all)
+    if request.post?
+      save_category
+      return
+    end
+    @category = Category.find(params[:id]) if params[:id]
+    render 'new'
   end
 
 end

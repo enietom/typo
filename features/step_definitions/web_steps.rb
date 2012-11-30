@@ -55,6 +55,21 @@ And /^I am logged into the admin panel$/ do
   end
 end
 
+# Added for the create_category.feature
+Then /^The "(.*?)" table should have (\d+) rows$/ do |table, rows|
+  page.all("table##{table} tr").count.should == rows.to_i + 1
+end
+
+Then /^I should see "(.*?)" in the "(.*?)" field$/ do |value, field_name|
+  field = find_field(field_name)
+  field_value = (field.tag_name == 'textarea') ? field.text : field.value
+  if field_value.respond_to? :should
+    field_value.should =~ /#{value}/
+  else
+    assert_match(/#{value}/, field_value)
+  end
+end
+
 # Single-line step scoper
 When /^(.*) within (.*[^:])$/ do |step, parent|
   with_scope(parent) { When step }
