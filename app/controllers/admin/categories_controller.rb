@@ -2,16 +2,8 @@ class Admin::CategoriesController < Admin::BaseController
   cache_sweeper :blog_sweeper
 
   def index; redirect_to :action => 'new' ; end
-  def edit; new_or_edit;  end
-
-  def new 
-    respond_to do |format|
-      format.html { new_or_edit }
-      format.js { 
-        @category = Category.new
-      }
-    end
-  end
+  def edit; new_or_edit; end
+  def new; new_or_edit; end
 
   def destroy
     @record = Category.find(params[:id])
@@ -21,23 +13,30 @@ class Admin::CategoriesController < Admin::BaseController
     redirect_to :action => 'new'
   end
 
+  private
+
   def save_category
+    logger.debug(params[:category].inspect)
     if (params[:category][:id].empty?)
+      logger.debug("1")
       @category = Category.new
     else
+      logger.debug("2")
       @category = Category.find(params[:category][:id])
     end
     @category.attributes = params[:category]
+    logger.debug("3")
     if @category.save!
+      logger.debug("4")
       flash[:notice] = _('Category was successfully saved.')
     else
+    logger.debug("5")
       flash[:error] = _('Category could not be saved.')
     end
     
     respond_to do |format|
       format.html { redirect_to :action => 'new' }
       format.js do 
-        @category.save
         @article = Article.new
         @article.categories << @category
         return render(:partial => 'admin/content/categories')
@@ -45,16 +44,22 @@ class Admin::CategoriesController < Admin::BaseController
     end
   end
 
-  private
-
   def new_or_edit
-    @categories = Category.find(:all)
     if request.post?
       save_category
-      return
+    else
+      @categories = Category.find(:all)
+      logger.debug("params[:id]: #{params[:id]}")
+      @category = Category.find(params[:id]) if params[:id]
+      @category = Category.new unless @category
+      
+      respond_to do |format|
+        format.html { render 'new' }
+        format.js { 
+          @category = Category.new
+        }
+      end
     end
-    @category = Category.find(params[:id]) if params[:id]
-    render 'new'
   end
 
 end
